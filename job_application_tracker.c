@@ -34,6 +34,62 @@ int main(){
 
     return 0 ;
 }
+void  addApplicant(){
+        FILE *File1;
+File1= fopen("Applicants.txt","r");
+if (File1){
+ int i;
+ do{
+    i=getc(File1);
+    if (i=='\n')
+    numOfApplicant++;
+ }while((i!= EOF));
+ numOfApplicant=numOfApplicant-2;
+fclose(File1);
+}
+else 
+    printf("The file  %s can not open #Error \n ","Applicants.txt");
+
+//**********************************
+    FILE *ApplicantFile;
+ApplicantFile= fopen("Applicants.txt","r");
+int i;
+list=( struct Applicant *)calloc(numOfApplicant,sizeof(struct Applicant));
+   if(ApplicantFile) {
+    char line1[100];
+    char line2[100];
+
+   fgets(line1,sizeof(line1),ApplicantFile);
+    fgets(line2,sizeof(line2),ApplicantFile);
+
+    for(i=0;i<numOfApplicant;i++){
+        fscanf(ApplicantFile,"%d %s %s %d %s %f %s ",&list[i].id,list[i].applicant,list[i].education,&list[i].Experience,list[i].major,&list[i].GPA,list[i].State);
+        list[i].Points=0;
+            }
+    fclose(ApplicantFile);
+   }
+   else {
+    printf("The file  %s can not open #Error \n ","Applicants.txt");
+   }
+
+}
+
+
+
+
+void calculatePoints(){
+int i;
+for (i=0;i<numOfApplicant;i++){
+    if(strcmp(list[i].education,"MSc")==0)
+list[i].Points=list[i].GPA+list[i].Experience+10;
+    else 
+list[i].Points=list[i].GPA+list[i].Experience;
+
+}
+
+}
+
+
 
 void writeAssignedApplicants(){
 
