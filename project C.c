@@ -28,3 +28,4 @@ printf( "%-20d %-20s %-20s %-20s %-20.2f %-20s \n",list[m].id , list[m].applican
  }
  m++;
 }}
+//just agbgfgbb
