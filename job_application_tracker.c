@@ -4,7 +4,7 @@
 
 void addApplicant();
 void calculatePoints();
-void setApplicantState(char* MajorList);
+void setApplicantState(char* majorRequirements);
 void writeAssignedApplicants();
 void printList();
 
@@ -25,18 +25,10 @@ int numOfApplicant = 0 ;
 struct Applicant *list ;
 
 
-int main(){
- 
 
-
-
-
-
-    return 0 ;
-}
 void  addApplicant(){
-        FILE *File1;
-File1= fopen("Applicants.txt","r");
+FILE *File1;
+File1= fopen("C:\\Vscode\\Project\\Csc215-project\\Applicants.txt","r");
 if (File1){
  int i;
  do{
@@ -52,7 +44,7 @@ else
 
 //**********************************
     FILE *ApplicantFile;
-ApplicantFile= fopen("Applicants.txt","r");
+ApplicantFile= fopen("C:\\Vscode\\Project\\Csc215-project\\Applicants.txt","r");
 int i;
 list=( struct Applicant *)calloc(numOfApplicant,sizeof(struct Applicant));
    if(ApplicantFile) {
@@ -89,43 +81,68 @@ list[i].Points=list[i].GPA+list[i].Experience;
 
 }
 
+void setApplicantState(char* majorRequirements) {
+    int i, assignedIndex = -1;
+    float maxPoints = 0.0;
+
+    for (i = 0; i < numOfApplicant; i++) {
+        if (strstr(majorRequirements, list[i].major) != NULL) {
+            strcpy(list[i].State, "candidate");
+
+            if (list[i].Points > maxPoints) {
+                maxPoints = list[i].Points;
+                assignedIndex = i;
+            }
+        }
+    }
+
+    if (assignedIndex != -1) {
+        strcpy(list[assignedIndex].State, "Assigned");
+    }
+}
 
 
-void writeAssignedApplicants(){
+
+void writeAssignedApplicants(){   
 
 FILE *Fpo = fopen("Output_Applicants.txt","w");
-if(Fpo == NULL){
-printf("Something went wrong with opining the file!!");
-return; }
-
-int i;
-
-fprintf(Fpo , "The input applicants list is:\n");
-fprintf(Fpo , " %-10s %-10s  %-10s %-10s %-10s %-10s  %-10s\n " ,"id", "Name" , "Education" , "Experience", "Major" , "GPA" , "State" );
-for(i = 0 ;i < numOfApplicant ; i++){
-    if(strcmp(list[i].State ,"Assigned") == 0)
-        fprintf(Fpo,"%-10d %-10s %-10s %-10d %-10s %-10.1f %-10s\n",&list[i].id , list[i].applicant ,list[i].education , &list[i].Experience ,list[i].major , &list[i].GPA , list[i].State );
-    else
-        fprintf(Fpo,"%-10d %-10s %-10s %-10d %-10s %-10.1f %-10s\n",&list[i].id , list[i].applicant ,list[i].education , &list[i].Experience ,list[i].major , &list[i].GPA , "OWL" );
+if (Fpo == NULL){
+printf("something went wrong \n"); 
+return ; 
 }
+ 
+fprintf(Fpo ,"The input Applicant list is : \n");
+fprintf(Fpo , "%-15s %-20s %-20s %-20s %-15s %-15s %-20s \n" , "id","Name","Education", "Experience","Major" , "GPA" , "State");
+ int i ; 
+for( i = 0 ; i < numOfApplicant ; i++ ) { 
+if( strcmp( list[i].State , "Assigned") == 0 )  
 
-fprintf(Fpo , "\n----------\n");
-
-fprintf(Fpo , "The Candidate's list is:\n");
-fprintf(Fpo , " %-10s %-10s  %-10s %-10s %-10s %-10s  %-10s\n " ,"id", "Applicant" , "Education" , "Major" , "Points" , "State" );
-for(i = 0 ;i < numOfApplicant ; i++){
-    if(strcmp(list[i].State ,"Assigned") == 0 || strcmp(list[i].State ,"Candidate") == 0 )
-    fprintf(Fpo,"%-10d %-10s %-10s %-10s %-10.2f %-10s\n",&list[i].id , list[i].applicant ,list[i].education ,list[i].major , &list[i].Points, list[i].State );
+fprintf(Fpo , "%-15d %-20s %-20s %-20d %-15s %-15.1f %-20s \n",list[i].id , list[i].applicant , list[i].education ,list[i].Experience , (list[i].major) , list[i].GPA , list[i].State);
+ else
+ fprintf(Fpo , "%-15d %-20s %-20s %-20d %-15s %-15.1f %-20s \n",list[i].id , list[i].applicant , list[i].education ,list[i].Experience , (list[i].major) , list[i].GPA , "OWL");
 }
+ 
+fprintf(Fpo , "-------------\n" ) ; 
+fprintf(Fpo , "The candidate's list is : \n" ) ; 
+fprintf(Fpo , "%-15s %-20s %-20s %-20s %-15s %-20s\n" ,"id","applicant","Education", "Major" , "Points" , "State");
+for( i = 0 ; i < numOfApplicant ; i++ ) { 
+if( strcmp( list[i].State , "candidate") == 0  || strcmp( list[i].State , "Assigned") == 0 )  
+fprintf(Fpo , "%-15d %-20s %-20s %-20s %-15.2f %-20s \n",(list[i].id) , list[i].applicant , list[i].education ,(list[i].major) , list[i].Points , list[i].State);
+ 
+} 
 
-fprintf(Fpo , "\n----------\n");
+fprintf(Fpo , "-------------\n" ) ; 
+fprintf(Fpo , "The Assigned Applicant is  : \n" ) ; 
+for( i = 0 ; i < numOfApplicant ; i++ ) { 
+if( strcmp( list[i].State , "Assigned") == 0 ){  
+fprintf(Fpo , "%-15d %-20s %-20s %-20s %-15.2f %-20s \n",(list[i].id) , list[i].applicant , list[i].education ,(list[i].major) , list[i].Points , list[i].State);
+  break; 
+  }
+ 
+} 
 
-fprintf(Fpo , "Assigned Applicant is:\n");
-for(i = 0 ;i < numOfApplicant ; i++){
-    if(strcmp(list[i].State ,"Assigned") == 0){
-    fprintf(Fpo,"%-10d %-10s %-10s %-10s  %-10.2f %-10s\n",&list[i].id , list[i].applicant ,list[i].education ,list[i].major , &list[i].Points, list[i].State );
-    break; }
-}
+
+fclose(Fpo);
 
 }
 
@@ -161,4 +178,15 @@ printf( "%-20d %-20s %-20s %-20s %-20.2f %-20s \n",list[m].id , list[m].applican
  m++;
 }
 
+}
+
+int main(){
+ 
+ addApplicant();
+ calculatePoints();
+ setApplicantState("CSC,InS,SWE,CEN");
+ writeAssignedApplicants();
+ printList();
+
+    return 0 ;
 }
